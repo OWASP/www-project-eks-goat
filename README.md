@@ -47,9 +47,20 @@
     <a href="https://owasp.org/www-project-eks-goat/">
         <img alt="OWASP Project" src="https://img.shields.io/badge/OWASP-Official%20Project-orange.svg" />
     </a>
+    <a href="https://github.com/sponsors/peachycloudsecurity">
+        <img alt="GitHub Sponsor" src="https://img.shields.io/badge/GitHub-Sponsor-ea4aaa?logo=github&logoColor=white" />
+    </a>
+    <a href="https://www.youtube.com/@peachycloudsecurity">
+        <img alt="YouTube" src="https://img.shields.io/badge/YouTube-Subscribe-red?logo=youtube&logoColor=white" />
+    </a>
   
 </p>
 
+---
+
+<p align="center">
+  <b>Featured At</b>
+</p>
 
 <p align="center">
   <a href="https://www.blackhat.com/eu-25/arsenal/schedule/index.html">
@@ -248,21 +259,30 @@ This isn’t a read-only guide or sandbox demo. It’s a working, breakable EKS 
 - **Usage Rights**: Individuals are permitted to use this course for instructional purposes, provided that no fees are charged to the students.
 
 
-
 > Note: Currently unable to provide the support in case facing any deployment issue. This lab is for educational purposes only. Do not attack or test any website or network without proper authorization. The trainers are not liable or responsible for any misuse and this course provided independently and is not endorsed by their employers or any other corporate entity. Refer to disclaimer section at [eksgoat.peachycloudsecurity.com](https://eksgoat.peachycloudsecurity.com/welcome/introduction#disclaimer)
 
-## Sponsor
-[![Sponsor Us](https://img.shields.io/badge/Sponsor%20me-%E2%9D%A4-ff69b4?style=for-the-badge)](https://github.com/sponsors/peachycloudsecurity)
+## 💝 Support the Project
 
+Your support helps us maintain and improve OWASP EKS Goat, create more educational content, and continue building open-source security resources for the community.
+
+**Ways to Support:**
+- ⭐ **Star this repository** - Help others discover the project.
+- 💻 **Contribute** - Submit PRs, improve documentation, and suggest changes in the documentation via issues.
+- ☕ **Sponsor via GitHub** - [GitHub Sponsors](https://github.com/sponsors/peachycloudsecurity)
+- 🎓 **Explore Learning Resources** - Access additional tutorials, walkthroughs, and hands-on labs at [peachycloudsecurity.com](https://peachycloudsecurity.com)
+- 🤝 **Connect & Learn** - Connect with us via [Topmate](https://topmate.io/peachycloudsecurity)
+
+> 💡 **Looking for personalized guidance?** Get one-on-one mentorship, interview prep, or custom training sessions through our [Topmate](https://topmate.io/peachycloudsecurity) platform.
 
 ## 📢 Community
 
 ### A Container Security Village Initiative | Now Part of OWASP !
  -  🔗 **OWASP Project Page:** [OWASP EKS Goat](https://owasp.org/www-project-eks-goat/)  
  - 🔗 **Container Security Village:** [LinkedIn](https://www.linkedin.com/company/containersecurityvillage/)
+ - 📚 **Additional Learning Resources:** Explore multi-cloud security tutorials, hands-on labs, and educational content covering GCP, AWS, Kubernetes, and DevSecOps at [peachycloudsecurity.com](https://peachycloudsecurity.com)
 
 
-Note: Kubernetes® is a registered trademark of The Linux Foundation
+Note: Kubernetes® is a registered trademark of The Linux Foundation. 
 
 
 
