@@ -124,7 +124,7 @@ OWASP EKS Goat is an open-source, intentionally vulnerable EKS cluster designed 
 This isn’t a read-only guide or sandbox demo. It’s a working, breakable EKS lab cluster to explore and improve real-world cloud security.
 
 
-## 🧪 Real-World Scenarios 🧪
+## Real-World Scenarios
 
 * Exploiting vulnerable jenkins web applications deployed inside EKS.
 * Compromising ECR containers and persisting through image backdoors.
@@ -137,7 +137,7 @@ This isn’t a read-only guide or sandbox demo. It’s a working, breakable EKS 
 
 
 
-## ✅ Prerequisites 
+## Prerequisites 
 
 
 > Note: Running this lab on AWS EKS will incur costs.
@@ -149,7 +149,7 @@ This isn’t a read-only guide or sandbox demo. It’s a working, breakable EKS 
 
 
 
-## 📘 Lab Documentation
+## Lab Documentation
 
 >  Covers setup, exploit labs, and mitigation labs step-by-step including scenario details on CVE-2024-23897 (Arbitrary File Read Vulnerability)
 
@@ -162,24 +162,24 @@ This isn’t a read-only guide or sandbox demo. It’s a working, breakable EKS 
 
 
 
-### 🏆 Scenarios Documented
+### Scenarios Documented
 
 
-#### 📦 Container & Image Security
+#### Container & Image Security
 
 * Docker Image and Layer Analysis
 * Container Secrets Misuse
 * Static Scanning with Hadolint, Dockle
 * Docker Bench Security (CIS benchmark)
 
-#### 🔐 AWS ECR Exploitation
+#### AWS ECR Exploitation
 
 * ECR Image Scanning
 * Immutable Tag Enforcement
 * Credential Abuse for Private ECR Enumeration
 * Backdooring Docker Images in ECR
 
-#### ☁️ AWS EKS Exploitation
+#### AWS EKS Exploitation
 
 * Deploying Vulnerable EKS Infrastructure
 * Metadata Service Abuse (IMDSv2) to Steal Credentials
@@ -189,22 +189,22 @@ This isn’t a read-only guide or sandbox demo. It’s a working, breakable EKS 
 * Privilege Escalation to S3 Access and Data Exfiltration
 * EC2 Instance Cleanup Post Exploit
 
-#### 🔍 Scanning & Auditing
+#### Scanning & Auditing
 
 * Kubescape for Compliance Assessment
 * Kubebench for Node Security Benchmarking
 
-#### 🛡️ Runtime Defense & Hardening
+#### Runtime Defense & Hardening
 
 * AWS GuardDuty Alerts for EKS Threats
 
-#### ⚙️ Environment Lifecycle
+#### Environment Lifecycle
 
 * Infra Spin-up for Vulnerable EKS Cluster
 * Complete Infra Teardown Lab
 
 
-## 🙌 Credits
+## Credits
 
 > Reach out in case of missing credits. 
 
@@ -241,7 +241,7 @@ This isn’t a read-only guide or sandbox demo. It’s a working, breakable EKS 
 - [ Attacking & Defending Kubernetes training](https://www.linkedin.com/in/peachycloudsecurity/)
 - [mathewpalmer](https://matthewpalmer.net/kubernetes-app-developer/articles/kubernetes-apiversion-definition-guide.html)
 
-## ⚠️ Disclaimer
+## Disclaimer
 
 - The information, commands, and demonstrations presented in this lab including any course, are intended strictly for educational purposes. Under no circumstances should they be used to compromise or attack any system outside the boundaries of this educational session unless explicit permission has been granted.
 
@@ -266,20 +266,20 @@ This isn’t a read-only guide or sandbox demo. It’s a working, breakable EKS 
 Your support helps us maintain and improve OWASP EKS Goat, create more educational content, and continue building open-source security resources for the community.
 
 **Ways to Support:**
-- ⭐ **Star this repository** - Help others discover the project.
-- 💻 **Contribute** - Submit PRs, improve documentation, and suggest changes in the documentation via issues.
-- ☕ **Sponsor via GitHub** - [GitHub Sponsors](https://github.com/sponsors/peachycloudsecurity)
-- 🎓 **Explore Learning Resources** - Access additional tutorials, walkthroughs, and hands-on labs at [peachycloudsecurity.com](https://peachycloudsecurity.com)
-- 🤝 **Connect & Learn** - Connect with us via [Topmate](https://topmate.io/peachycloudsecurity)
+- **Star this repository** - Help others discover the project.
+- **Contribute** - Submit PRs, improve documentation, and suggest changes in the documentation via issues.
+- **Sponsor via GitHub** - [GitHub Sponsors](https://github.com/sponsors/peachycloudsecurity)
+- **Explore Learning Resources** - Access additional tutorials, walkthroughs, and hands-on labs at [peachycloudsecurity.com](https://peachycloudsecurity.com)
+- **Connect & Learn** - Connect with us via [Topmate](https://topmate.io/peachycloudsecurity)
 
-> 💡 **Looking for personalized guidance?** Get one-on-one mentorship, interview prep, or custom training sessions through our [Topmate](https://topmate.io/peachycloudsecurity) platform.
+> **Looking for personalized guidance?** Get one-on-one mentorship, interview prep, or custom training sessions through our [Topmate](https://topmate.io/peachycloudsecurity) platform.
 
-## 📢 Community
+## Community
 
 ### A Container Security Village Initiative | Now Part of OWASP !
- -  🔗 **OWASP Project Page:** [OWASP EKS Goat](https://owasp.org/www-project-eks-goat/)  
- - 🔗 **Container Security Village:** [LinkedIn](https://www.linkedin.com/company/containersecurityvillage/)
- - 📚 **Additional Learning Resources:** Explore multi-cloud security tutorials, hands-on labs, and educational content covering GCP, AWS, Kubernetes, and DevSecOps at [peachycloudsecurity.com](https://peachycloudsecurity.com)
+ - **OWASP Project Page:** [OWASP EKS Goat](https://owasp.org/www-project-eks-goat/)  
+ - **Container Security Village:** [LinkedIn](https://www.linkedin.com/company/containersecurityvillage/)
+ - **Additional Learning Resources:** Explore multi-cloud security tutorials, hands-on labs, and educational content covering GCP, AWS, Kubernetes, and DevSecOps at [peachycloudsecurity.com](https://peachycloudsecurity.com)
 
 
 Note: Kubernetes® is a registered trademark of The Linux Foundation. 
