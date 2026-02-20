@@ -5,10 +5,39 @@ INTERRUPTED=false
 trap 'echo; echo "Script interrupted. It will exit after the current operation completes."; INTERRUPTED=true' SIGINT SIGTERM SIGHUP
 
 # Check if the script is being sourced
-if ! (return 0 2>/dev/null); then
+# If the script is executed directly, exit with a helpful message.
+# If the script is sourced, continue.
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
     echo "This script must be sourced to work correctly (e.g. 'source $0' or '. $0')"
-    exit 1
+    return 1 2>/dev/null || exit 1
 fi
+
+# Attempt to fix Yarn APT key/source if a Yarn repo is present and the keyring is missing.
+# This function is idempotent and will not abort the script if it fails.
+fix_yarn_key_if_needed() {
+    if grep -R --quiet "dl.yarnpkg.com" /etc/apt 2>/dev/null; then
+
+        # Remove broken repo first
+        sudo rm -f /etc/apt/sources.list.d/yarn.list
+
+        # if keyring already present, still continue (we want fresh repo definition)
+        echo "Fixing Yarn APT repo (non-fatal)..."
+        sudo mkdir -p /usr/share/keyrings
+
+        if curl -fsSL https://dl.yarnpkg.com/debian/pubkey.gpg | sudo gpg --dearmor -o /usr/share/keyrings/yarn-archive-keyring.gpg; then
+            echo "Yarn keyring added."
+
+            echo "deb [signed-by=/usr/share/keyrings/yarn-archive-keyring.gpg] https://dl.yarnpkg.com/debian stable main" \
+                | sudo tee /etc/apt/sources.list.d/yarn.list > /dev/null
+
+            # optional but useful → refresh apt once here
+            sudo apt-get update || true
+        else
+            echo "Warning: failed to fix Yarn key; continuing..."
+        fi
+    fi
+    return 0
+}
 
 # Function to install AWS CLI
 install_aws() {
@@ -71,10 +100,15 @@ install_terraform() {
     fi
 
     if [[ "$OS" == "ubuntu" ]]; then
+        # try to fix Yarn key/source if present but missing key; non-fatal
+        fix_yarn_key_if_needed || true
+
         sudo apt-get update && sudo apt-get install -y gnupg software-properties-common curl
         curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
         echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
-        sudo apt-get update && sudo apt-get install -y terraform
+        # attempt update/install; if apt-get update errors due to other repos, attempt install anyway
+        sudo apt-get update || echo "Warning: apt-get update reported errors; attempting to install terraform anyway..."
+        sudo apt-get install -y terraform || { echo "terraform install failed"; return 1; }
 
     elif [[ "$OS" == "centos" || "$OS" == "rhel" || "$OS" == "fedora" ]]; then
         sudo yum install -y yum-utils uuid-runtime jq
@@ -99,6 +133,9 @@ install_terraform() {
 # Function to install jq
 install_jq() {
     echo "Installing jq..."
+    # try to fix Yarn key/source if present but missing key; non-fatal
+    fix_yarn_key_if_needed || true
+
     if [[ "$OS" == "ubuntu" ]]; then
         sudo apt-get update && sudo apt-get install -y jq uuid-runtime
     elif [[ "$OS" == "centos" || "$OS" == "rhel" || "$OS" == "fedora" ]]; then
