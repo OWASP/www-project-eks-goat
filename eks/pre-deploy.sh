@@ -24,7 +24,7 @@ fix_yarn_key_if_needed() {
         echo "Fixing Yarn APT repo (non-fatal)..."
         sudo mkdir -p /usr/share/keyrings
 
-        if curl -fsSL https://dl.yarnpkg.com/debian/pubkey.gpg | sudo gpg --dearmor -o /usr/share/keyrings/yarn-archive-keyring.gpg; then
+        if curl -fsSL https://dl.yarnpkg.com/debian/pubkey.gpg | sudo gpg --batch --yes --dearmor -o /usr/share/keyrings/yarn-archive-keyring.gpg; then
             echo "Yarn keyring added."
 
             echo "deb [signed-by=/usr/share/keyrings/yarn-archive-keyring.gpg] https://dl.yarnpkg.com/debian stable main" \
