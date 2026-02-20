@@ -267,7 +267,7 @@ managedNodeGroups:
     desiredCapacity: 2
     minSize: 2
     maxSize: 4
-    amiFamily: AmazonLinux2
+    amiFamily: AmazonLinux2023
     iam:
       instanceRoleARN: arn:aws:iam::${AWS_ACCOUNT_ID}:role/${EKS_ROLE_NAME}
 EOF
