@@ -64,6 +64,9 @@
 
 <p align="center">
   <a href="https://www.blackhat.com/eu-25/arsenal/schedule/index.html">
+    <img alt="Seasides Goa 2026" src="https://img.shields.io/badge/Seasides-Goa%202026-5F86C9.svg" />
+</a>
+  <a href="https://www.blackhat.com/eu-25/arsenal/schedule/index.html">
     <img alt="Black Hat Arsenal Europe 2025" src="https://img.shields.io/badge/BlackHat%20Arsenal-Europe%202025-black.svg" />
 </a>
     <a href="https://owasp.org/events/">
