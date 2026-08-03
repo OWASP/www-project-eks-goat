@@ -24,6 +24,7 @@ else
   
   # Extract variables and save them to a file
   export REPO_SUFFIX=$(grep "Repo Suffix:" deployment_output.txt 2>/dev/null | awk '{print $3}' || echo "")
+  export DEPLOYED_REGION=$(grep "AWS Region:" deployment_output.txt 2>/dev/null | awk '{print $3}' || echo "")
   export AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query "Account" --output text)
   export CLUSTER_NAME=$(grep "EKS Cluster Name:" deployment_output.txt 2>/dev/null | awk '{print $4}' || echo "")
   export REPO_NAME=$(grep "ECR Repository Name:" deployment_output.txt 2>/dev/null | awk '{print $4}' || echo "")
@@ -38,6 +39,7 @@ else
   cat <<EOL > "$VARIABLES_FILE"
 export DEFAULT_REGION="$DEFAULT_REGION"
 export REPO_SUFFIX="$REPO_SUFFIX"
+export DEPLOYED_REGION="$DEPLOYED_REGION"
 export AWS_ACCOUNT_ID="$AWS_ACCOUNT_ID"
 export CLUSTER_NAME="$CLUSTER_NAME"
 export REPO_NAME="$REPO_NAME"
@@ -48,6 +50,11 @@ export INSTANCE_PROFILE_NAME="$INSTANCE_PROFILE_NAME"
 export S3_POLICY_NAME="$S3_POLICY_NAME"
 export CLOUDFORMATION_STACK_NAME="$CLOUDFORMATION_STACK_NAME"
 EOL
+fi
+
+# Older deployment output did not include the region, so use the EC2 ARN when available.
+if [ -z "${DEPLOYED_REGION:-}" ] && [ -f "ec2_output.json" ]; then
+  export DEPLOYED_REGION=$(jq -r '.instance_arn.value // empty | split(":")[3]' ec2_output.json 2>/dev/null || echo "")
 fi
 
 # Check if a region argument is provided, otherwise use the default region
@@ -63,6 +70,28 @@ else
     exit 1
   fi
 fi
+
+if [ -n "${DEPLOYED_REGION:-}" ] && [ "$DEPLOYED_REGION" != "$REGION" ]; then
+  echo "Error: Deployment resources are in ${DEPLOYED_REGION}, not ${REGION}."
+  exit 1
+fi
+
+eks_cluster_exists() {
+  local output
+  output=$(aws eks describe-cluster --name "$CLUSTER_NAME" --region "$REGION" --query 'cluster.status' --output text 2>&1)
+  local status=$?
+
+  if [ $status -eq 0 ]; then
+    return 0
+  fi
+
+  if [[ "$output" == *"ResourceNotFoundException"* ]]; then
+    return 1
+  fi
+
+  echo "Error: Unable to check EKS cluster ${CLUSTER_NAME}: ${output}" >&2
+  return 2
+}
 
 # Loop through the checkpoints and execute the corresponding actions
 while true; do
@@ -81,18 +110,39 @@ while true; do
     "CHECKPOINT_1")
       echo "Deleting EKS cluster with name ${CLUSTER_NAME} in region ${REGION}..."
       # Check if cluster exists before trying to delete
-      if eksctl get cluster --name ${CLUSTER_NAME} --region ${REGION} &>/dev/null; then
-        eksctl delete cluster --name ${CLUSTER_NAME} --region ${REGION}
+      if eks_cluster_exists; then
+        eksctl delete cluster --name ${CLUSTER_NAME} --region ${REGION} || exit 1
+
+        if aws cloudformation describe-stacks --stack-name ${CLOUDFORMATION_STACK_NAME} --region ${REGION} &>/dev/null; then
+          echo "Waiting for stack deletion to complete..."
+          aws cloudformation wait stack-delete-complete --stack-name ${CLOUDFORMATION_STACK_NAME} --region ${REGION} || exit 1
+        fi
       else
+        cluster_status=$?
+        if [ $cluster_status -eq 2 ]; then
+          exit 1
+        fi
+
         echo "Cluster ${CLUSTER_NAME} does not exist, skipping cluster deletion."
         # If cluster doesn't exist, try to delete CloudFormation stack if it exists
         if aws cloudformation describe-stacks --stack-name ${CLOUDFORMATION_STACK_NAME} --region ${REGION} &>/dev/null; then
           echo "Deleting CloudFormation stack ${CLOUDFORMATION_STACK_NAME}..."
           aws cloudformation delete-stack --stack-name ${CLOUDFORMATION_STACK_NAME} --region ${REGION}
           echo "Waiting for stack deletion to complete..."
-          aws cloudformation wait stack-delete-complete --stack-name ${CLOUDFORMATION_STACK_NAME} --region ${REGION} || true
+          aws cloudformation wait stack-delete-complete --stack-name ${CLOUDFORMATION_STACK_NAME} --region ${REGION} || exit 1
         fi
       fi
+
+      if eks_cluster_exists; then
+        echo "Cluster ${CLUSTER_NAME} still exists."
+        exit 1
+      else
+        cluster_status=$?
+        if [ $cluster_status -eq 2 ]; then
+          exit 1
+        fi
+      fi
+
       echo "CHECKPOINT_2" > "$CHECKPOINT_FILE"
       ;;
 

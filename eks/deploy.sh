@@ -483,6 +483,7 @@ fi
 
 
 echo "Repo Suffix: ${REPO_SUFFIX}" > $OUTPUT_FILE
+echo "AWS Region: ${REGION}" >> $OUTPUT_FILE
 echo "ECR Repository Name: ${REPO_NAME}" >> $OUTPUT_FILE
 echo "ECR Repository URL: ${REPO_URL}" >> $OUTPUT_FILE
 echo "EKS Cluster Name: ${EKS_CLUSTER_NAME}" >> $OUTPUT_FILE
