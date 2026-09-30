@@ -198,5 +198,4 @@ check_binary jq
 # Reset traps so they don't persist in the user's shell after sourcing
 trap - SIGINT SIGTERM SIGHUP
 
-echo "PeachyCloudSecurity AWS Security Labs: pre-deployment checks and installations are complete."
-echo "Next: run 'aws configure' with your lab IAM user credentials, then verify with 'aws sts get-caller-identity'."
+echo "Pre-deployment checks and installations are complete."
