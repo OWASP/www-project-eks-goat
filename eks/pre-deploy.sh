@@ -42,22 +42,25 @@ fix_yarn_key_if_needed() {
 # Function to install AWS CLI
 install_aws() {
     echo "Installing AWS CLI..."
-    curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-    unzip awscliv2.zip
+    curl "https://awscli.amazonaws.com/awscli-exe-linux-$(uname -m).zip" -o "awscliv2.zip"
+    unzip -q -o awscliv2.zip
     sudo ./aws/install
     rm -rf awscliv2.zip aws
     echo "AWS CLI installation complete."
 
     if [ "$INTERRUPTED" = true ]; then
         echo "Exiting as requested after installing AWS CLI."
-        exit 1
+        return 1
     fi
 }
 
 # Function to install eksctl
 install_eksctl() {
     echo "Installing eksctl..."
-    PLATFORM=$(uname -s)_amd64
+    case $(uname -m) in
+        x86_64) PLATFORM=$(uname -s)_amd64 ;;
+        aarch64) PLATFORM=$(uname -s)_arm64 ;;
+    esac
     curl -sLO "https://github.com/eksctl-io/eksctl/releases/latest/download/eksctl_$PLATFORM.tar.gz"
     tar -xzf eksctl_$PLATFORM.tar.gz -C /tmp && rm eksctl_$PLATFORM.tar.gz
     sudo mv /tmp/eksctl /usr/local/bin
@@ -65,7 +68,7 @@ install_eksctl() {
 
     if [ "$INTERRUPTED" = true ]; then
         echo "Exiting as requested after installing eksctl."
-        exit 1
+        return 1
     fi
 }
 
@@ -76,7 +79,7 @@ install_kubectl() {
     case $ARCH in
         x86_64) BIN_ARCH="amd64" ;;
         aarch64) BIN_ARCH="arm64" ;;
-        *) echo "Unsupported architecture: $ARCH"; exit 1 ;;
+        *) echo "Unsupported architecture: $ARCH"; return 1 ;;
     esac
     curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/$BIN_ARCH/kubectl"
     sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
@@ -84,7 +87,7 @@ install_kubectl() {
 
     if [ "$INTERRUPTED" = true ]; then
         echo "Exiting as requested after installing kubectl."
-        exit 1
+        return 1
     fi
 }
 
@@ -96,7 +99,7 @@ install_terraform() {
         OS=$ID
     else
         echo "Cannot determine OS type. Exiting."
-        exit 1
+        return 1
     fi
 
     if [[ "$OS" == "ubuntu" ]]; then
@@ -120,13 +123,13 @@ install_terraform() {
         sudo yum -y install terraform
     else
         echo "Unsupported OS: $OS. Please install Terraform manually."
-        exit 1
+        return 1
     fi
     echo "Terraform installation complete."
 
     if [ "$INTERRUPTED" = true ]; then
         echo "Exiting as requested after installing Terraform."
-        exit 1
+        return 1
     fi
 }
 
@@ -138,17 +141,17 @@ install_jq() {
 
     if [[ "$OS" == "ubuntu" ]]; then
         sudo apt-get update && sudo apt-get install -y jq uuid-runtime
-    elif [[ "$OS" == "centos" || "$OS" == "rhel" || "$OS" == "fedora" ]]; then
+    elif [[ "$OS" == "centos" || "$OS" == "rhel" || "$OS" == "fedora" || "$OS" == "amzn" ]]; then
         sudo yum install -y jq
     else
         echo "Unsupported OS: $OS. Please install jq manually."
-        exit 1
+        return 1
     fi
     echo "jq installation complete."
 
     if [ "$INTERRUPTED" = true ]; then
         echo "Exiting as requested after installing jq."
-        exit 1
+        return 1
     fi
 }
 
@@ -163,7 +166,7 @@ check_binary() {
 
     if [ "$INTERRUPTED" = true ]; then
         echo "Exiting as requested after checking $1."
-        exit 1
+        return 1
     fi
 }
 
@@ -171,7 +174,7 @@ check_binary() {
 ARCH=$(uname -m)
 if [[ "$ARCH" != "x86_64" && "$ARCH" != "aarch64" ]]; then
     echo "Error: This script only supports Intel/AMD64 or ARM64 architectures. Detected architecture: $ARCH."
-    exit 1
+    return 1
 fi
 
 # Determine OS type
@@ -181,7 +184,7 @@ if [ -f /etc/os-release ]; then
     echo "Operating System detected: $OS."
 else
     echo "Cannot determine operating system type. Exiting."
-    exit 1
+    return 1
 fi
 
 # Check and install required binaries
@@ -192,4 +195,8 @@ check_binary kubectl
 check_binary terraform
 check_binary jq
 
-echo "Pre-deployment checks and installations are complete."
+# Reset traps so they don't persist in the user's shell after sourcing
+trap - SIGINT SIGTERM SIGHUP
+
+echo "PeachyCloudSecurity AWS Security Labs: pre-deployment checks and installations are complete."
+echo "Next: run 'aws configure' with your lab IAM user credentials, then verify with 'aws sts get-caller-identity'."
