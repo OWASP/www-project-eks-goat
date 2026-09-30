@@ -2,3 +2,20 @@
 /Gemfile.lock
 /favicon.ico
 _site/
+
+# Deployment runtime files
+eks/deployment_output.txt
+eks/ec2_output.json
+eks/flag.txt
+eks/checkpoint.txt
+eks/saved_variables.txt
+eks/eks-cluster-config.yaml
+eks/peachycloudsecurity-eks-policy.json
+eks/peachycloudsecurity-ekstrust-policy.json
+eks/ec2_terraform/ec2_policy.json
+eks/ec2_terraform/trust-policy.json
+
+# Terraform runtime files
+eks/ec2_terraform/.terraform/
+eks/ec2_terraform/*.tfstate
+eks/ec2_terraform/*.tfstate.*
